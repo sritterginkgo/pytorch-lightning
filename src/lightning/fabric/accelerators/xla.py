@@ -33,8 +33,6 @@ class XLAAccelerator(Accelerator):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if not _XLA_AVAILABLE:
             raise ModuleNotFoundError(str(_XLA_AVAILABLE))
-        if not _using_pjrt():
-            raise RuntimeError("The XLA XRT runtime is not supported anymore.")
         super().__init__(*args, **kwargs)
 
     @override
@@ -102,17 +100,6 @@ class XLAAccelerator(Accelerator):
 # PJRT support requires this minimum version
 _XLA_AVAILABLE = RequirementCache("torch_xla>=1.13", "torch_xla")
 _XLA_GREATER_EQUAL_2_1 = RequirementCache("torch_xla>=2.1")
-
-
-def _using_pjrt() -> bool:
-    # delete me when torch_xla 2.2 is the min supported version, where XRT support has been dropped.
-    if _XLA_GREATER_EQUAL_2_1:
-        from torch_xla import runtime as xr
-
-        return xr.using_pjrt()
-    from torch_xla.experimental import pjrt
-
-    return pjrt.using_pjrt()
 
 
 def _parse_tpu_devices(devices: Union[int, str, List[int]]) -> Union[int, List[int]]:

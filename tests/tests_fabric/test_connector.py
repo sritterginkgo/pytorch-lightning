@@ -342,7 +342,6 @@ def test_cuda_accelerator_can_not_run_on_system(_):
 
 @pytest.mark.skipif(XLAAccelerator.is_available(), reason="test requires missing TPU")
 @mock.patch("lightning.fabric.accelerators.xla._XLA_AVAILABLE", True)
-@mock.patch("lightning.fabric.accelerators.xla._using_pjrt", return_value=True)
 def test_tpu_accelerator_can_not_run_on_system(_):
     with pytest.raises(RuntimeError, match="XLAAccelerator` can not run on your system"):
         _Connector(accelerator="tpu", devices=8)
